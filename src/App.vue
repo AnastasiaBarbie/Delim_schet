@@ -1,17 +1,16 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <router-link style="color: rgba(0, 0, 0, 0.776)" :to="{ name: 'PeopleList' }">
+    <v-btn :class="$route.name === 'PeopleList'" style="margin-left: 10px">
+      Start
+    </v-btn>
+  </router-link>
+  <router-view />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+};
 </script>
 
 <style>
