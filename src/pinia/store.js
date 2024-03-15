@@ -3,7 +3,9 @@ import { defineStore } from "pinia";
 export const useStore = defineStore("mainStore", {
   state: () => ({
     people: [],
+    products: [],
     nextIdPeople: 1,
+    nextIdProduct: 1,
   }),
   actions: {
     initializeStore() {
@@ -15,6 +17,10 @@ export const useStore = defineStore("mainStore", {
     addPeople(newPeople) {
       this.people.push(newPeople);
       this.nextIdPeople += 1;
+    },
+    addProduct(newProduct) {
+      this.products.push(newProduct);
+      this.nextIdProduct += 1;
     },
   },
   getters: {

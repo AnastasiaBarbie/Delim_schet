@@ -1,10 +1,6 @@
 <template>
-  <router-link style="color: rgba(0, 0, 0, 0.776)" :to="{ name: 'PeopleList' }">
-    <v-btn :class="$route.name === 'PeopleList'" style="margin-left: 10px">
-      Start
-    </v-btn>
-  </router-link>
-  <router-view />
+  skolko deneg?
+  <RouterView />
 </template>
 
 <script>
