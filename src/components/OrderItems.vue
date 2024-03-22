@@ -1,21 +1,26 @@
 <template>
   <v-app>
+    <!-- Диалог для добавления продуктов -->
     <v-dialog width="500" v-model="dialogProduct">
       <template #activator="{ props }">
-        <v-btn style="margin-right: 75%" v-bind="props" text="Add products">
+        <v-btn
+          style="margin-right: 75%"
+          v-bind="props"
+          text="Добавить продукты"
+        >
         </v-btn>
       </template>
       <template #default="{ isActive }">
         <v-card>
-          <v-card-title>Products</v-card-title>
+          <v-card-title>Продукты</v-card-title>
           <v-card-text>
             <v-form @submit.prevent="createProduct">
-              <v-text-field v-model="newProduct.name" label="Name" required>
+              <v-text-field v-model="newProduct.name" label="Название" required>
               </v-text-field>
               <v-text-field
                 v-model="newProduct.price"
                 type="number"
-                label="Price"
+                label="Цена"
                 required
               >
               </v-text-field>
@@ -26,40 +31,64 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text="Закрыть" @click="isActive.value = false"></v-btn>
+            <v-btn text="Закрыть" @click="isActive.value = false" />
           </v-card-actions>
         </v-card>
       </template>
     </v-dialog>
+
+    <!-- Список продуктов -->
     <v-list>
-      <v-list-item
-        @click="toggleDetails(product)"
-        v-for="product in store.products"
-        :key="product.id"
-      >
-        {{ product.name }}: {{ product.price }}rub
-        <v-list-item v-if="product.showDetails">
-          <v-checkbox
-            v-for="people in store.people"
-            :key="people.id"
-            :label="`${people.name}`"
-          />
-          Additional information: {{ product.additionalInfo }}
-        </v-list-item>
+      <v-list-item v-for="product in store.products" :key="product.id">
+        <v-list-item-content @click="toggleDetails(product)">
+          {{ product.name }}: {{ product.price }} руб
+        </v-list-item-content>
+        <template v-if="product.showDetails">
+          <!-- Выбор человека, который оплатил -->
+          <v-list-item>
+            <v-select
+              v-model="product.paidBy"
+              label="Оплатил"
+              :items="peopleNames"
+            />
+          </v-list-item>
+          <!-- Выбор людей, кто ел продукт -->
+          <v-list-item>
+            <v-select
+              v-model="product.consumed"
+              label="Съели"
+              :items="peopleNames"
+              multiple
+            />
+          </v-list-item>
+        </template>
       </v-list-item>
     </v-list>
+    <router-link
+      style="color: rgba(0, 0, 0, 0.776)"
+      :to="{ name: 'FinalScore' }"
+    >
+      <v-btn :class="$route.name === 'FinalScore'" style="margin-left: 10px">
+        Result
+      </v-btn>
+    </router-link>
+    <router-view />
   </v-app>
 </template>
 
 <script>
 import { useStore } from "@/pinia/store";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 export default {
   name: "PeopleList",
   setup() {
     const store = useStore();
     const dialogProduct = ref(false);
+
+    const peopleNames = computed(() =>
+      store.people.map((person) => person.name)
+    );
     const newProduct = ref({
       name: "",
       price: 0,
@@ -72,26 +101,42 @@ export default {
       store.addProduct({
         name: newProduct.value.name,
         price: newProduct.value.price,
-        id: store.nextIdProduct,
-        showDetails: false, // Добавляем свойство для отображения дополнительной информации
-        additionalInfo: "Some additional info", // Пример дополнительной информации
+        id: Date.now(),
+        showDetails: false,
+        showNextSelect: false,
+        paidBy: null, // Добавляем свойство для хранения информации об оплатившем
+        consumed: [], // Добавляем свойство для хранения информации о тех, кто ел продукт
       });
       newProduct.value = {
         name: "",
         price: 0,
         id: "",
-        showSelect: false,
       };
     };
     const toggleDetails = (product) => {
-      product.showDetails = !product.showDetails; // Переключаем значение флага при клике
+      product.showDetails = !product.showDetails;
     };
+    /*
+    const createDebt = (product) => {
+      const totalConsumers = product.consumed.length;
+      const pricePerConsumer = product.price / totalConsumers;
+      for (const consumer of product.consumed) {
+        store.addDebt({
+          who: consumer,
+          whom: product.paidBy,
+          howMany: pricePerConsumer,
+          idDebt: Date.now(),
+        });
+      }
+    }; */
+
     return {
       dialogProduct,
       store,
       createProduct,
       newProduct,
       toggleDetails,
+      peopleNames,
     };
   },
 };

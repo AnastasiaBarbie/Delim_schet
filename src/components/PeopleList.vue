@@ -60,7 +60,7 @@ export default {
       }
       store.addPeople({
         name: newPeople.value.name,
-        id: store.nextIdPeople,
+        id: Date.now(),
       });
       newPeople.value = {
         name: "",

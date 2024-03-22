@@ -1,5 +1,4 @@
 <template>
-  skolko deneg?
   <RouterView />
 </template>
 
