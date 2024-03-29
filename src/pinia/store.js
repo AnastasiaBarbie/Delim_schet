@@ -4,6 +4,8 @@ export const useStore = defineStore("mainStore", {
   state: () => ({
     people: [],
     products: [],
+    debts: [],
+    whomShould: [],
   }),
   actions: {
     initializeStore() {
@@ -17,6 +19,12 @@ export const useStore = defineStore("mainStore", {
     },
     addProduct(newProduct) {
       this.products.push(newProduct);
+    },
+    addDebt(newDebt) {
+      this.debts.push(newDebt);
+    },
+    addWhomeShould(newWhomeShould) {
+      this.whomShould.push(newWhomeShould);
     },
   },
   getters: {
