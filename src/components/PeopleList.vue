@@ -2,15 +2,14 @@
   <v-app>
     <v-dialog width="500" v-model="dialog">
       <template #activator="{ props }">
-        <v-btn style="margin-right: 75%" v-bind="props" text="Add people">
-        </v-btn>
+        <v-btn class="btn-add" v-bind="props" text="Добавить клиента"> </v-btn>
       </template>
       <template #default="{ isActive }">
         <v-card>
-          <v-card-title>People</v-card-title>
+          <v-card-title>Клиенты</v-card-title>
           <v-card-text>
             <v-form @submit.prevent="createPeople">
-              <v-text-field v-model="newPeople.name" label="Name" required>
+              <v-text-field v-model="newPeople.name" label="Имя" required>
               </v-text-field>
               <v-btn type="submit" @click="isActive.value = false">
                 Добавить
@@ -18,8 +17,8 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn text="Закрыть" @click="isActive.value = false"></v-btn>
+            <v-spacer />
+            <v-btn text="Закрыть" @click="isActive.value = false" />
           </v-card-actions>
         </v-card>
       </template>
@@ -33,9 +32,7 @@
       style="color: rgba(0, 0, 0, 0.776)"
       :to="{ name: 'OrderItems' }"
     >
-      <v-btn :class="$route.name === 'OrderItems'" style="margin-left: 10px">
-        Next
-      </v-btn>
+      <v-btn :class="$route.name === 'OrderItems'"> Далее </v-btn>
     </router-link>
     <router-view />
   </v-app>
@@ -52,6 +49,7 @@ export default {
     const dialog = ref(false);
     const newPeople = ref({
       name: "",
+      expenses: 0,
       id: "",
     });
     const createPeople = () => {
@@ -60,6 +58,7 @@ export default {
       }
       store.addPeople({
         name: newPeople.value.name,
+        expenses: 0,
         id: Date.now(),
       });
       newPeople.value = {
@@ -76,3 +75,7 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+@import "../styles/styles.scss";
+</style>

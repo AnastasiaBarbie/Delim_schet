@@ -26,6 +26,12 @@ export const useStore = defineStore("mainStore", {
     addWhomeShould(newWhomeShould) {
       this.whomShould.push(newWhomeShould);
     },
+    addExpensesPerson(consumer, pricePerConsumer) {
+      const person = this.people.find((person) => person.name === consumer);
+      if (person) {
+        person.expenses += parseFloat(pricePerConsumer);
+      }
+    },
   },
   getters: {
     loadState() {

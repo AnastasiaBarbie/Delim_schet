@@ -1,0 +1,12 @@
+$color_btn: rgb(130, 145, 196);
+
+.btn-add {
+  margin: 0 auto;
+  display: block;
+  border: 2px solid $color_btn;
+}
+
+.button-result {
+  border: 2px solid $color_btn;
+  margin-right: 5px;
+}

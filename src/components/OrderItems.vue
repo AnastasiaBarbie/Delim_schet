@@ -3,12 +3,7 @@
     <!-- Диалог для добавления продуктов -->
     <v-dialog width="500" v-model="dialogProduct">
       <template #activator="{ props }">
-        <v-btn
-          style="margin-right: 75%"
-          v-bind="props"
-          text="Добавить продукты"
-        >
-        </v-btn>
+        <v-btn class="btn-add" v-bind="props" text="Добавить продукты"> </v-btn>
       </template>
       <template #default="{ isActive }">
         <v-card>
@@ -45,34 +40,44 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
+            <v-spacer />
             <v-btn text="Закрыть" @click="isActive.value = false" />
           </v-card-actions>
         </v-card>
       </template>
     </v-dialog>
-
     <!-- Список продуктов -->
     <v-list>
       <v-list-item v-for="product in store.products" :key="product.id">
-        <v-list-item-content @click="toggleDetails(product)">
+        <v-list-item-content
+          @click="toggleDetails(product)"
+          style="cursor: pointer"
+        >
+          <span>&#9660;</span>
           {{ product.name }}: {{ product.price }} руб
         </v-list-item-content>
         <template v-if="product.showDetails">
           <v-list>
-            <v-list-item> Оплатил: {{ product.paidBy }}</v-list-item>
-            <v-list-item> Съели: {{ product.consumed }} </v-list-item>
+            <v-list-item>
+              Оплатил: {{ product.paidBy }} <br />
+              Съели:
+              <span v-for="(consumer, index) in product.consumed" :key="index">
+                {{ index > 0 ? ", " : "" }}{{ consumer }}
+              </span>
+            </v-list-item>
           </v-list>
         </template>
       </v-list-item>
     </v-list>
-    <v-container> Итого оплатить: {{ showSum() }} </v-container>
+    <v-container>
+      <strong> Итого оплатить: {{ showSum() }} </strong>
+    </v-container>
     <router-link
       style="color: rgba(0, 0, 0, 0.776)"
       :to="{ name: 'FinalScore' }"
     >
       <v-btn :class="$route.name === 'FinalScore'" style="margin-left: 10px">
-        Result
+        Результат
       </v-btn>
     </router-link>
     <router-view />
@@ -123,11 +128,11 @@ export default {
         newProduct.value.price / totalConsumers
       ).toFixed(2);
       for (const consumer of newProduct.value.consumed) {
+        store.addExpensesPerson(consumer, parseFloat(pricePerConsumer));
         if (consumer !== newProduct.value.paidBy) {
           const existingWhomShouldIndex = store.whomShould.findIndex(
             (whome) => whome.whom === newProduct.value.paidBy
           );
-
           if (existingWhomShouldIndex !== -1) {
             const existingCreditIndex = store.whomShould[
               existingWhomShouldIndex
@@ -158,7 +163,6 @@ export default {
           }
         }
       }
-
       for (const consumer of newProduct.value.consumed) {
         if (consumer !== newProduct.value.paidBy) {
           const existingDebtIndex = store.debts.findIndex(
@@ -168,14 +172,12 @@ export default {
                 (entry) => entry.whom === newProduct.value.paidBy
               )
           );
-
           if (existingDebtIndex !== -1) {
             const existingCreditIndex = store.debts[
               existingDebtIndex
             ].credit.findIndex(
               (entry) => entry.whom === newProduct.value.paidBy
             );
-
             if (existingCreditIndex !== -1) {
               store.debts[existingDebtIndex].credit[
                 existingCreditIndex
@@ -185,7 +187,6 @@ export default {
             const existDebtWhoIndex = store.debts.findIndex(
               (debt) => debt.who === consumer
             );
-
             if (existDebtWhoIndex !== -1) {
               store.debts[existDebtWhoIndex].credit.push({
                 whom: newProduct.value.paidBy,
@@ -213,7 +214,6 @@ export default {
       newProduct.value.paidBy = null;
       newProduct.value.consumed = [];
     };
-
     const toggleDetails = (product) => {
       product.showDetails = !product.showDetails;
     };
@@ -225,7 +225,6 @@ export default {
       console.log("Общая сумма продуктов:", sum);
       return sum;
     };
-
     return {
       dialogProduct,
       store,
@@ -238,3 +237,7 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+@import "../styles/styles.scss";
+</style>
